@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang=“en-us”>
+<head>
+<meta charset=“UTF-8”>
+<title> GifTastic </title>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+
+
+<body> 
+        <div id="title" class="jumbotron text-center">
+                <h1>GifTastic</h1>
+                <h3>By Jared Walker</h3>
+                </div>
+    <form id="gif-form" class="text-center">
+        <label for="gif-input">Add your own Gif:</label>
+        <input type="text" id="gif-input"><br>
+
+        <input class="btn-primary" id="add-gif" type="submit" value="Add Gif Button">
+    </form>
+
+    <div id="buttons-show-here"></div>
+
+    <div id="gifs-show-here"></div>
+
+    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  
+  <script type="text/javascript">
+      
+    var buttonArray = ["Camaro", "Corvette", "Pontiac Lemans GTO", "NSX", "Mini Cooper S", "Dodge Challenger", "Trans am", "Lamborghini", "BMW M3", "Dodge Viper", "Chevrolet Chevelle", "Lancer Evo", "Subaru STI", "VW Golf GTI", "Nissan GTR"];
+      
+      
+      
+      
+        function renderButtons() {
+          
+        console.log("CLICKED BUTTON RENDERED");
+          
+       
+        $("#buttons-show-here").empty();
+        
+         for (var i = 0; i < buttonArray.length; i++) {
+          
+          
+          var a = $("<button>");
+          
+          
+          a.addClass("gif btn-success align-center");
+          a.attr("data-name", buttonArray[i]);
+          
+          a.text(buttonArray[i]);
+          $("#buttons-show-here").append(a);
+        }
+      }
+      
+      $("#add-gif").on("click", function(event) {
+          
+        console.log("GIF BUTTON ADDED");
+          
+        event.preventDefault();
+        var gif = $("#gif-input").val().trim();
+        
+        buttonArray.push(gif);
+         
+        renderButtons();
+      });
+      
+      
+
+      function displayGifs() {
+        
+      console.log("CLICKED GIF BUTTON");
+        
+      var gifName = $(this).attr("data-name");
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        gifName + "&api_key=dc6zaTOxFJmzC&limit=10";
+      $.ajax({
+          url: queryURL,
+          method: "GET"
+        })
+        .done(function(response) {
+          var results = response.data;
+          for (var i = 0; i < results.length; i++) {
+            var gifDiv = $("<div class='item'>");
+            var rating = results[i].rating;
+            var p = $("<p>").text("#" + gifName + " - Rating: " + rating);
+            var gifImage = $("<img>");
+            gifImage.attr("src", results[i].images.fixed_height.url);
+            gifDiv.prepend(p);
+            gifDiv.prepend(gifImage);
+            $("#gifs-show-here").prepend(gifDiv);
+          }
+        });
+
+      };
+      
+      $(document).on("click", ".gif", displayGifs);
+      renderButtons();
+      
+  </script>
+
+
+    <form id="cars-form">
+        <label for ="cars-input">
+            Add a car
+        </label>
+    </form>
+    
+</body>
+</html>
